@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { AgentDashboardComponent } from './agent-dashboard.component';
 // import { RouterOutlet } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -12,3 +14,4 @@ import { AgentDashboardComponent } from './agent-dashboard.component';
 export class App {
   protected title = 'multi-agent-dashboard';
 }
+
