@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // <-- Add this
+
 
 interface AgentStep {
   label: string;
@@ -15,11 +17,57 @@ interface Agent {
 @Component({
   selector: 'app-agent-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './agent-dashboard.component.html',
   styleUrls: ['./agent-dashboard.component.css']
 })
 export class AgentDashboardComponent implements OnInit, OnDestroy {
+  // Tab state for new screens
+  activeTab: 'dashboard' | 'feed' | 'radar' | 'carousel' = 'dashboard';
+
+  // For Live Chat & Activity Feed
+  agentEvents: Array<{agent: string, text: string, time: string, type: string, icon: string}> = [
+    { agent: 'Agent 1', text: 'Started extraction', time: '10:01 AM', type: 'status', icon: '⚡' },
+    { agent: 'Agent 2', text: 'Risk score calculated', time: '10:02 AM', type: 'message', icon: '💬' },
+    { agent: 'Agent 3', text: 'Stopped by user', time: '10:03 AM', type: 'error', icon: '⛔' },
+    { agent: 'Agent 4', text: 'Portfolio generated', time: '10:04 AM', type: 'status', icon: '✅' },
+  ];
+  newMessage: string = '';
+
+  sendAgentMessage() {
+    if (this.newMessage.trim()) {
+      this.agentEvents.unshift({
+        agent: 'You',
+        text: this.newMessage,
+        time: new Date().toLocaleTimeString(),
+        type: 'message',
+        icon: '💬'
+      });
+      this.newMessage = '';
+    }
+  }
+
+  // For Agent Detail overlay (used in carousel)
+  showAgentDetail = false;
+  selectedAgentIndex = 0;
+  selectedAgentType = '';
+  selectedAgentStep = '';
+  selectedAgentProgress = 0;
+
+  openAgentDetail(idx: number) {
+    this.selectedAgentIndex = idx;
+    this.selectedAgentType = 'Type ' + (idx + 1); // Replace with real type if available
+    const agent = this.agents[idx];
+    const activeStep = agent.steps.find(s => s.active) || agent.steps.find(s => !s.done) || agent.steps[0];
+    this.selectedAgentStep = activeStep?.label || '';
+    this.selectedAgentProgress = Math.round(
+      (agent.steps.filter(s => s.done).length / agent.steps.length) * 100
+    );
+    this.showAgentDetail = true;
+  }
+
+  // For SVG math in template
+  Math = Math;
   agents: Agent[] = [
     {
       active: false,

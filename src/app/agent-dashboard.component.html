@@ -1,39 +1,149 @@
+
 <div class="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col items-center py-8">
-  <div class="flex flex-wrap gap-8 justify-center w-full mb-8">
-    <ng-container *ngFor="let agent of agents; let i = index">
-      <div [ngClass]="{
-        'border-2 border-cyan-400 bg-gradient-to-tr from-cyan-100 to-white shadow-xl scale-105': agent.active,
-        'border border-green-200 bg-white shadow-md': !agent.active
-      }"
-        class="rounded-2xl p-6 w-72 transition-all duration-300 relative">
-        <h2 class="text-2xl font-semibold text-center mb-4">Agent {{i+1}}</h2>
-        <div *ngFor="let step of agent.steps" class="mb-2">
-          <div [ngClass]="{
-            'bg-green-50 border-green-300 text-green-700': step.done,
-            'bg-cyan-50 border-cyan-300 text-cyan-700 animate-pulse': step.active && agent.active,
-            'bg-white border-gray-200 text-gray-700': !step.done && !step.active
-          }"
-            class="flex items-center border rounded-lg px-3 py-2 mb-2 transition-all duration-300">
-            <span *ngIf="step.done" class="mr-2 text-green-500">✓</span>
-            <span *ngIf="step.active && !step.done" class="mr-2 text-cyan-400 animate-spin">●</span>
-            <span class="truncate w-full">{{step.label}} <span *ngIf="step.active && !step.done" class="text-xs italic ml-2">Processing...</span></span>
+  <!-- Tabs -->
+  <div class="flex gap-4 mb-8">
+    <button (click)="activeTab = 'dashboard'" [ngClass]="activeTab === 'dashboard' ? 'bg-cyan-500 text-white' : 'bg-white text-cyan-500 border border-cyan-200'" class="px-6 py-2 rounded-full font-semibold shadow transition">Dashboard</button>
+    <button (click)="activeTab = 'feed'" [ngClass]="activeTab === 'feed' ? 'bg-cyan-500 text-white' : 'bg-white text-cyan-500 border border-cyan-200'" class="px-6 py-2 rounded-full font-semibold shadow transition">Live Feed</button>
+    <button (click)="activeTab = 'radar'" [ngClass]="activeTab === 'radar' ? 'bg-cyan-500 text-white' : 'bg-white text-cyan-500 border border-cyan-200'" class="px-6 py-2 rounded-full font-semibold shadow transition">Radar</button>
+    <button (click)="activeTab = 'carousel'" [ngClass]="activeTab === 'carousel' ? 'bg-cyan-500 text-white' : 'bg-white text-cyan-500 border border-cyan-200'" class="px-6 py-2 rounded-full font-semibold shadow transition">Carousel</button>
+  </div>
+
+  <!-- Dashboard Tab -->
+  <ng-container *ngIf="activeTab === 'dashboard'">
+    <div class="flex flex-wrap gap-8 justify-center w-full mb-8">
+      <ng-container *ngFor="let agent of agents; let i = index">
+        <div [ngClass]="{
+          'border-2 border-cyan-400 bg-gradient-to-tr from-cyan-100 to-white shadow-xl scale-105': agent.active,
+          'border border-green-200 bg-white shadow-md': !agent.active
+        }"
+          class="rounded-2xl p-6 w-72 transition-all duration-300 relative">
+          <h2 class="text-2xl font-semibold text-center mb-4">Agent {{i+1}}</h2>
+          <div *ngFor="let step of agent.steps" class="mb-2">
+            <div [ngClass]="{
+              'bg-green-50 border-green-300 text-green-700': step.done,
+              'bg-cyan-50 border-cyan-300 text-cyan-700 animate-pulse': step.active && agent.active,
+              'bg-white border-gray-200 text-gray-700': !step.done && !step.active
+            }"
+              class="flex items-center border rounded-lg px-3 py-2 mb-2 transition-all duration-300">
+              <span *ngIf="step.done" class="mr-2 text-green-500">✓</span>
+              <span *ngIf="step.active && !step.done" class="mr-2 text-cyan-400 animate-spin">●</span>
+              <span class="truncate w-full">{{step.label}} <span *ngIf="step.active && !step.done" class="text-xs italic ml-2">Processing...</span></span>
+            </div>
+          </div>
+          <div *ngIf="agent.active" class="absolute bottom-2 right-4">
+            <span class="inline-block w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></span>
+          </div>
+          <div class="flex justify-between mt-4">
+            <button (click)="toggleAgent(agent)" class="px-3 py-1 rounded bg-cyan-500 text-white hover:bg-cyan-600 transition">{{agent.active ? 'Stop' : 'Start'}}</button>
           </div>
         </div>
-        <div *ngIf="agent.active" class="absolute bottom-2 right-4">
-          <span class="inline-block w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></span>
-        </div>
-        <div class="flex justify-between mt-4">
-          <button (click)="toggleAgent(agent)" class="px-3 py-1 rounded bg-cyan-500 text-white hover:bg-cyan-600 transition">{{agent.active ? 'Stop' : 'Start'}}</button>
-        </div>
+      </ng-container>
+    </div>
+    <div class="w-full max-w-4xl bg-white rounded-xl shadow-lg p-4">
+      <div class="flex items-center justify-center mb-2">
+        <span class="font-semibold tracking-widest text-cyan-700">▶ AGENT LOG ◀</span>
       </div>
-    </ng-container>
-  </div>
-  <div class="w-full max-w-4xl bg-white rounded-xl shadow-lg p-4">
-    <div class="flex items-center justify-center mb-2">
-      <span class="font-semibold tracking-widest text-cyan-700">▶ AGENT LOG ◀</span>
+      <div class="h-48 overflow-y-auto text-xs font-mono text-blue-900 px-2">
+        <div *ngFor="let log of logs">{{log}}</div>
+      </div>
     </div>
-    <div class="h-48 overflow-y-auto text-xs font-mono text-blue-900 px-2">
-      <div *ngFor="let log of logs">{{log}}</div>
+  </ng-container>
+
+  <!-- Agent Live Chat & Activity Feed Tab -->
+  <ng-container *ngIf="activeTab === 'feed'">
+    <div class="w-full max-w-3xl mx-auto my-12">
+      <div class="text-2xl font-bold text-cyan-700 mb-4 text-center">Agent Communication Feed</div>
+      <div class="bg-white rounded-2xl shadow-xl p-6 h-96 overflow-y-auto flex flex-col gap-4">
+        <ng-container *ngFor="let event of agentEvents">
+          <div class="flex items-start gap-3 animate-fade-in">
+            <span class="text-2xl" [ngClass]="event.type === 'message' ? 'text-cyan-500' : event.type === 'status' ? 'text-green-500' : 'text-pink-500'">
+              {{ event.icon }}
+            </span>
+            <div>
+              <div class="font-semibold text-cyan-700">{{event.agent}}</div>
+              <div class="text-sm text-gray-700">{{event.text}}</div>
+              <div class="text-xs text-gray-400">{{event.time}}</div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="flex justify-center mt-6">
+        <input type="text" [(ngModel)]="newMessage" placeholder="Send command to agent..." class="px-4 py-2 rounded-l-xl border border-cyan-200 w-2/3 focus:outline-none" />
+        <button (click)="sendAgentMessage()" class="px-6 py-2 bg-cyan-500 text-white rounded-r-xl font-bold hover:bg-cyan-600 transition">Send</button>
+      </div>
     </div>
-  </div>
+  </ng-container>
+
+  <!-- Agent Status Radar Tab -->
+  <ng-container *ngIf="activeTab === 'radar'">
+    <div class="w-full max-w-2xl mx-auto my-12 flex flex-col items-center">
+      <div class="text-2xl font-bold text-cyan-700 mb-4">Agent Status Radar</div>
+      <svg viewBox="0 0 400 400" class="w-full h-96">
+        <circle cx="200" cy="200" r="180" fill="url(#radarGradient)" />
+        <defs>
+          <radialGradient id="radarGradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#e0f7fa" />
+            <stop offset="100%" stop-color="#b2ebf2" />
+          </radialGradient>
+        </defs>
+        <ng-container *ngFor="let agent of agents; let i = index">
+          <g (click)="toggleAgent(agent)" style="cursor:pointer;">
+            <circle
+              [attr.cx]="200 + 150 * Math.cos((i/agents.length)*2*Math.PI)"
+              [attr.cy]="200 + 150 * Math.sin((i/agents.length)*2*Math.PI)"
+              r="28"
+              [attr.fill]="agent.active ? '#00bcd4' : '#e0e0e0'"
+              [attr.stroke]="agent.active ? '#00e676' : '#bdbdbd'"
+              stroke-width="4"
+              [attr.class]="agent.active ? 'animate-pulse' : ''"
+            />
+            <text
+              [attr.x]="200 + 150 * Math.cos((i/agents.length)*2*Math.PI)"
+              [attr.y]="200 + 150 * Math.sin((i/agents.length)*2*Math.PI) + 6"
+              text-anchor="middle"
+              font-size="18"
+              fill="#263238"
+              font-weight="bold"
+            >{{i+1}}</text>
+          </g>
+        </ng-container>
+        <text x="200" y="200" text-anchor="middle" font-size="24" fill="#00bcd4" font-weight="bold">Agents</text>
+      </svg>
+      <div class="mt-4 text-center text-gray-500">Click any agent to start/stop. Active agents pulse.</div>
+    </div>
+  </ng-container>
+
+  <!-- Agent Step Progress Carousel Tab -->
+  <ng-container *ngIf="activeTab === 'carousel'">
+    <div class="w-full max-w-4xl mx-auto my-12">
+      <div class="text-2xl font-bold text-cyan-700 mb-4 text-center">Agent Step Progress</div>
+      <div class="flex gap-8 overflow-x-auto pb-4">
+        <ng-container *ngFor="let agent of agents; let i = index">
+          <div class="min-w-[320px] bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center hover:scale-105 transition cursor-pointer"
+               (click)="openAgentDetail(i)">
+            <div class="text-lg font-bold text-cyan-700 mb-2">Agent {{i+1}}</div>
+            <div class="w-full flex flex-col gap-2 mb-4">
+              <ng-container *ngFor="let step of agent.steps">
+                <div class="flex items-center gap-2">
+                  <span [ngClass]="{
+                    'bg-green-400': step.done,
+                    'bg-cyan-400 animate-pulse': step.active && agent.active,
+                    'bg-gray-300': !step.done && !step.active
+                  }" class="w-4 h-4 rounded-full"></span>
+                  <span class="font-semibold text-gray-700">{{step.label}}</span>
+                  <span *ngIf="step.active && !step.done" class="text-xs text-cyan-500 animate-spin">●</span>
+                  <span *ngIf="step.done" class="text-xs text-green-500">✓</span>
+                </div>
+              </ng-container>
+            </div>
+            <button (click)="toggleAgent(agent); $event.stopPropagation();"
+              [ngClass]="agent.active ? 'bg-pink-500 hover:bg-pink-600' : 'bg-cyan-500 hover:bg-cyan-600'"
+              class="px-4 py-1 rounded-full text-white font-semibold transition">
+              {{agent.active ? 'Stop' : 'Start'}}
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
 </div>
