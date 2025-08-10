@@ -1,3 +1,9 @@
+/**
+ * Agent Dashboard Component
+ * Modern multi-agent dashboard with live chat, radar, carousel, and simulation.
+ * Maintainer: Ansh (Curious-Confused-Dev)
+ * Last updated: 2025-08-10
+ */
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -22,6 +28,29 @@ interface Agent {
   styleUrls: ['./agent-dashboard.component.css']
 })
 export class AgentDashboardComponent implements OnInit, OnDestroy {
+
+  /**
+   * Reset all agents to their initial state (all steps done except last, last step active if any)
+   */
+  resetAllAgents() {
+    this.agents.forEach(agent => {
+      agent.active = false;
+      agent.steps.forEach((step, idx) => {
+        step.done = idx < agent.steps.length - 1;
+        step.active = idx === agent.steps.length - 1;
+      });
+    });
+    this.logs.unshift(`[${new Date().toLocaleTimeString()}] All agents reset`);
+    this.logs = this.logs.slice(0, 30);
+  }
+
+  /**
+   * Clear all logs and chat feed
+   */
+  clearAllLogs() {
+    this.logs = [];
+    this.agentEvents = [];
+  }
   // Tab state for new screens
   activeTab: 'dashboard' | 'feed' | 'radar' | 'carousel' = 'dashboard';
 
@@ -135,11 +164,12 @@ export class AgentDashboardComponent implements OnInit, OnDestroy {
     agent.active = !agent.active;
     const idx = this.agents.indexOf(agent);
     const agentNumber = this.agents.findIndex((a) => a === agent) + 1;
+    const now = new Date().toLocaleTimeString();
     if (agent.active) {
-      this.logs.unshift(`Agent ${agentNumber} started at ${new Date().toLocaleTimeString()}`);
+      this.logs.unshift(`[${now}] Agent ${agentNumber} started`);
       this.startAgentSimulation(agent, idx, agentNumber);
     } else {
-      this.logs.unshift(`Agent ${agentNumber} stopped at ${new Date().toLocaleTimeString()}`);
+      this.logs.unshift(`[${now}] Agent ${agentNumber} stopped`);
       this.stopAgentSimulation(idx);
     }
     this.logs = this.logs.slice(0, 30);
@@ -161,9 +191,10 @@ export class AgentDashboardComponent implements OnInit, OnDestroy {
       if (current === -1) current = 0;
       if (current > 0) agent.steps[current - 1].done = true;
       agent.steps.forEach((s, i) => (s.active = false));
+      const now = new Date().toLocaleTimeString();
       if (current < agent.steps.length) {
         agent.steps[current].active = true;
-        this.logs.unshift(`Agent ${agentNum}: ${agent.steps[current].label} started at ${new Date().toLocaleTimeString()}`);
+        this.logs.unshift(`[${now}] Agent ${agentNum}: ${agent.steps[current].label} started`);
         this.logs = this.logs.slice(0, 30);
         setTimeout(() => {
           if (agent.active) {
@@ -175,7 +206,7 @@ export class AgentDashboardComponent implements OnInit, OnDestroy {
           }
         }, 1200 + Math.random() * 1200);
       } else {
-        this.logs.unshift(`Agent ${agentNum}: All steps done at ${new Date().toLocaleTimeString()}`);
+        this.logs.unshift(`[${now}] Agent ${agentNum}: All steps done`);
         this.logs = this.logs.slice(0, 30);
         clearInterval(this.agentIntervals[idx]);
       }
