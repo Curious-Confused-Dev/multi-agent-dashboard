@@ -17,7 +17,10 @@ interface AgentStep {
 
 interface Agent {
   active: boolean;
-  steps: AgentStep[];
+  steps: AgentStep[]; 
+  // Add more properties as needed, e.g., type, progress, etc.
+  // type?: string; // Optional type property for agent categorization
+  // progress?: number; // Optional progress percentage
 }
 
 @Component({
