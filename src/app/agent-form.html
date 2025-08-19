@@ -1,17 +1,83 @@
-<!-- Basic Agent Add Form -->
-<form class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-6 flex flex-col gap-4">
-  <h2 class="text-xl font-bold text-cyan-700 mb-2">Add New Agent</h2>
-  <div>
-    <label class="block text-sm font-semibold text-gray-700 mb-1" for="agentName">Agent Name</label>
-    <input id="agentName" type="text" class="w-full px-3 py-2 border border-cyan-200 rounded focus:outline-none focus:ring-2 focus:ring-cyan-400" placeholder="Enter agent name" />
+<!-- Enhanced Agent Add Form -->
+<form class="max-w-lg mx-auto bg-white rounded-2xl shadow-2xl p-6 grid grid-cols-1 gap-6" role="form" aria-labelledby="agent-form-title">
+  <h2 id="agent-form-title" class="text-2xl font-extrabold text-cyan-700 text-center">Add New Agent</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label for="agentName" class="block text-sm font-medium text-gray-700">Agent Name</label>
+      <input id="agentName" name="agentName" type="text" placeholder="e.g. AlphaAgent" aria-label="Agent name" required
+             class="mt-1 w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
+      <p class="mt-1 text-xs text-gray-400">Pick a short, memorable name.</p>
+    </div>
+
+    <div>
+      <label for="agentType" class="block text-sm font-medium text-gray-700">Agent Type</label>
+      <input id="agentType" name="agentType" type="text" placeholder="e.g. Risk Engine" aria-label="Agent type"
+             class="mt-1 w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
+      <p class="mt-1 text-xs text-gray-400">Category for filtering (optional).</p>
+    </div>
   </div>
+
   <div>
-    <label class="block text-sm font-semibold text-gray-700 mb-1" for="agentType">Agent Type</label>
-    <input id="agentType" type="text" class="w-full px-3 py-2 border border-cyan-200 rounded focus:outline-none focus:ring-2 focus:ring-cyan-400" placeholder="e.g. Risk, Portfolio" />
+    <label for="agentSteps" class="block text-sm font-medium text-gray-700">Steps (one per line or comma separated)</label>
+    <textarea id="agentSteps" name="agentSteps" rows="4" placeholder="Extraction, Processing, Uploading" aria-label="Agent steps"
+              class="mt-1 w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition resize-vertical"></textarea>
+    <p class="mt-1 text-xs text-gray-400">Write workflow steps. The form will split by newline or comma.</p>
   </div>
-  <div>
-    <label class="block text-sm font-semibold text-gray-700 mb-1" for="agentSteps">Steps (comma separated)</label>
-    <input id="agentSteps" type="text" class="w-full px-3 py-2 border border-cyan-200 rounded focus:outline-none focus:ring-2 focus:ring-cyan-400" placeholder="e.g. Extraction, Processing, Uploading" />
+
+  <div class="flex items-center justify-between gap-4">
+    <div class="flex gap-3 items-center">
+      <label class="inline-flex items-center">
+        <input type="checkbox" id="agentActive" name="agentActive" class="form-checkbox h-4 w-4 text-cyan-500" />
+        <span class="ml-2 text-sm text-gray-700">Start active</span>
+      </label>
+      <label class="inline-flex items-center">
+        <input type="checkbox" id="agentNotify" name="agentNotify" class="form-checkbox h-4 w-4 text-cyan-500" />
+        <span class="ml-2 text-sm text-gray-700">Enable notifications</span>
+      </label>
+    </div>
+
+    <div class="flex gap-3">
+      <button type="button" id="previewBtn" class="px-4 py-2 bg-white border border-cyan-200 rounded-lg text-cyan-600 font-semibold hover:bg-cyan-50 transition">Preview</button>
+      <button type="submit" class="px-4 py-2 bg-cyan-600 text-white rounded-lg font-bold hover:bg-cyan-700 transition">Add Agent</button>
+    </div>
   </div>
-  <button type="submit" class="mt-2 px-4 py-2 bg-cyan-500 text-white rounded font-bold hover:bg-cyan-600 transition">Add Agent</button>
+
+  <!-- Live preview area -->
+  <div class="bg-gradient-to-tr from-white to-cyan-50 p-4 rounded-xl border border-cyan-100 shadow-inner">
+    <div class="flex items-center justify-between mb-2">
+      <div class="text-sm font-semibold text-cyan-700">Preview</div>
+      <div class="text-xs text-gray-400">Live preview of the new agent</div>
+    </div>
+    <div class="p-3 bg-white rounded-lg shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <div id="previewName" class="font-bold text-lg text-gray-800">Agent Name</div>
+          <div id="previewType" class="text-xs text-gray-500">Agent Type</div>
+        </div>
+        <div id="previewStatus" class="text-sm text-green-600 font-semibold">Stopped</div>
+      </div>
+
+      <div class="mt-3">
+        <div class="text-xs text-gray-500 font-medium mb-2">Steps</div>
+        <ul id="previewSteps" class="list-disc list-inside text-sm text-gray-700 space-y-1">
+          <li>Extraction</li>
+          <li>Processing</li>
+          <li>Uploading</li>
+        </ul>
+      </div>
+
+            <div class="mt-3">
+        <div class="text-xs text-gray-500 font-medium mb-2">Steps</div>
+        <ul id="previewSteps" class="list-disc list-inside text-sm text-gray-700 space-y-1">
+          <li>Extraction</li>
+          <li>Processing</li>
+          <li>Uploading</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </form>
+
+
+
