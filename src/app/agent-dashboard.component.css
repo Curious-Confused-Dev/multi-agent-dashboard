@@ -4,3 +4,52 @@
   border-radius: 8px;
     
 }
+
+
+.agent-card-header {
+  background-color: #f5f5f5; /* Light gray background */
+  border-bottom: 1px solid #ddd; /* Subtle bottom border */
+  padding: 16px;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.agent-card {
+  /* For custom card shadow or border if needed */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  border-radius: 8px;
+} 
+
+.agent-card-header {
+  background-color: #f5f5f5; /* Light gray background */
+  border-bottom: 1px solid #ddd; /* Subtle bottom border */
+  padding: 16px;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.agent-card-body {
+  padding: 16px;
+}
+
+.agent-card-footer {
+  background-color: #f5f5f5; /* Light gray background */
+  border-top: 1px solid #ddd; /* Subtle top border */
+  padding: 16px;
+  text-align: right;
+}
+
+.agent-card-body {
+  padding: 16px;
+}
+
+.agent-card-footer {
+  background-color: #f5f5f5; /* Light gray background */
+  border-top: 1px solid #ddd; /* Subtle top border */
+  padding: 16px;
+  text-align: right;
+} 
+
+.agent-card-footer button {
+  margin-left: 8px;
+}
