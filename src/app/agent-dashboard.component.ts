@@ -26,7 +26,6 @@ interface Agent {
 interface NewAgent {
   name: string;
   type: string;
-  stepsText: string;
   steps: string[];
   isActive: boolean;
   enableNotifications: boolean;
@@ -276,26 +275,28 @@ export class AgentDashboardComponent implements OnInit, OnDestroy {
   newAgent: NewAgent = {
     name: '',
     type: '',
-    stepsText: '',
     steps: [],
     isActive: false,
     enableNotifications: false
   };
 
-  updateStepsPreview() {
-    this.newAgent.steps = this.newAgent.stepsText
-      .split(/[\n,]/)
-      .map(step => step.trim())
-      .filter(step => step.length > 0);
-    this.previewAgent();
-  }
-
   previewAgent() {
-    // Preview updates automatically through template binding
+    // Update preview elements
+    document.getElementById('previewName').textContent = this.newAgent.name || 'Agent Name';
+    document.getElementById('previewType').textContent = this.newAgent.type || 'Agent Type';
+    document.getElementById('previewStatus').textContent = this.newAgent.isActive ? 'Active' : 'Stopped';
+    
+    // Update steps list
+    const stepsList = document.getElementById('previewSteps');
+    stepsList.innerHTML = this.newAgent.steps
+      .map(step => `<li>${step}</li>`)
+      .join('');
   }
 
   addNewAgent() {
+    // Validate and add the new agent
     if (this.validateNewAgent()) {
+      // Add to agents array
       this.agents.push({
         active: this.newAgent.isActive,
         steps: this.newAgent.steps.map(label => ({
@@ -304,19 +305,9 @@ export class AgentDashboardComponent implements OnInit, OnDestroy {
           active: false
         }))
       });
-
-      // Add to logs
-      this.logs.unshift(`>>> New Agent Added: ${this.newAgent.name} (${this.newAgent.type})`);
-
+      
       // Reset form
-      this.newAgent = {
-        name: '',
-        type: '',
-        stepsText: '',
-        steps: [],
-        isActive: false,
-        enableNotifications: false
-      };
+      this.resetNewAgentForm();
     }
   }
 
