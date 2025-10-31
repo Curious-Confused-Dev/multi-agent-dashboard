@@ -23,6 +23,15 @@ interface Agent {
   // progress?: number; // Optional progress percentage
 }
 
+interface NewAgent {
+  name: string;
+  type: string;
+  stepsText: string;
+  steps: string[];
+  isActive: boolean;
+  enableNotifications: boolean;
+}
+
 @Component({
   selector: 'app-agent-dashboard',
   standalone: true,
@@ -262,6 +271,57 @@ export class AgentDashboardComponent implements OnInit, OnDestroy {
       clearInterval(this.agentIntervals[idx]);
       this.agentIntervals[idx] = null;
     }
+  }
+
+  newAgent: NewAgent = {
+    name: '',
+    type: '',
+    stepsText: '',
+    steps: [],
+    isActive: false,
+    enableNotifications: false
+  };
+
+  updateStepsPreview() {
+    this.newAgent.steps = this.newAgent.stepsText
+      .split(/[\n,]/)
+      .map(step => step.trim())
+      .filter(step => step.length > 0);
+    this.previewAgent();
+  }
+
+  previewAgent() {
+    // Preview updates automatically through template binding
+  }
+
+  addNewAgent() {
+    if (this.validateNewAgent()) {
+      this.agents.push({
+        active: this.newAgent.isActive,
+        steps: this.newAgent.steps.map(label => ({
+          label,
+          done: false,
+          active: false
+        }))
+      });
+
+      // Add to logs
+      this.logs.unshift(`>>> New Agent Added: ${this.newAgent.name} (${this.newAgent.type})`);
+
+      // Reset form
+      this.newAgent = {
+        name: '',
+        type: '',
+        stepsText: '',
+        steps: [],
+        isActive: false,
+        enableNotifications: false
+      };
+    }
+  }
+
+  private validateNewAgent(): boolean {
+    return !!(this.newAgent.name && this.newAgent.type && this.newAgent.steps.length > 0);
   }
 }
 
