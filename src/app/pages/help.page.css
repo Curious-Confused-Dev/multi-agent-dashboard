@@ -1,0 +1,5 @@
+.help-page{max-width:900px;margin:2rem auto;padding:1rem;font-family:Inter,system-ui}
+.help-section{background:#fff;padding:1rem;border-radius:.75rem;border:1px solid #eef2ff;margin-bottom:1rem}
+.help-section h2{margin:0 0 .5rem}
+.help-section p, .help-section ol{color:#475569}
+.help-foot{color:#94a3b8;font-size:.85rem;text-align:center;margin-top:1rem}
